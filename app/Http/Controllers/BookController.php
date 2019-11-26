@@ -12,7 +12,7 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Book $books)
+    public function index()
     {
         $books = Book::all();
         return response()->json($books);

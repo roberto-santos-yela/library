@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Helpers\Token;
+use \Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -35,23 +37,21 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $users = new User();
+        $users->name = $request->name;
+        $users->email = $request->email;
+        $users->password = $request->password;
+        $users->save();
         
-        $books = new User();
-        $books->name = $request->input('name');
-        $books->email = $request->input('email');
-        $books->password = $request->input('password');
+        $token = new Token($users->email);
+        $coded_token = $token->encode();
 
-        //$books->save();
+        //$token = JWT::encode($token_data, $key);
+        return response()->json([
         
-        $key = 'sdnfakñapfawe`fçwèfàdfkad`fsdpfa`sdfa`sdfkàdfkasd`pfpàsdfmv';
-        $token_data = [
-           
-            "iss" => $books->email
-
-        ];
-
-        $token = JWT::encode($key, $token_data);
-        return response()->json($token);
+            "token" => $coded_token
+        
+        ], 201);
 
     }
 
@@ -99,4 +99,34 @@ class UserController extends Controller
     {
         //
     }
+
+    public function login(Request $request)
+    {   
+        $user = User::where('email', '=', $request->email)->first();
+        
+        if($user->password == $request->password)
+        {
+            
+            $token = new Token($user->email);
+            $coded_token = $token->encode();
+
+            return response()->json([
+        
+                "token" => $coded_token
+            
+            ], 201);
+   
+
+        }else{
+
+            return response()->json([
+
+                "Error" => "No autorizado"
+
+            ], 401 );
+
+        }
+  
+    }
+
 }

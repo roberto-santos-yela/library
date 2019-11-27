@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Book;
 use App\Helpers\Token;
 use Illuminate\Http\Request;
 
@@ -45,7 +46,6 @@ class UserController extends Controller
         $token = new Token($users->email);
         $coded_token = $token->encode();
 
-        //$token = JWT::encode($token_data, $key);
         return response()->json([
         
             "token" => $coded_token
@@ -126,6 +126,23 @@ class UserController extends Controller
 
         }
   
+    }
+
+    public function lend(Request $request)
+    {
+
+        $request_token = $request->header('Authorization');
+        $token = new Token();
+        $decoded_token = $token->decode($request_token);     
+       
+        $user = User::where('email', '=', $decoded_token)->first();
+       
+        $book = Book::where('title', '=', $request->title)->first();
+        $book_id = $book->id;        
+        
+        $user->books()->attach($book_id);
+
+
     }
 
 }

@@ -20,9 +20,9 @@ class ValidateUser
     {
         $request_token = $request->header('Authorization');
         $token = new Token();
-        $decoded_token = $token->decode($request_token);     
-        $user = User::where('email', '=', $decoded_token->email)->first();
-       
+        $decoded_token = $token->decode($request_token);
+        $user = User::where('email', '=', $decoded_token)->first();
+                     
         if($user != null)
         {
             return $next($request);

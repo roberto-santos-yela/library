@@ -53,7 +53,8 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        //
+        $book = Book::where('id', '=', $id)->first();
+        return response()->json($book);
     }
 
     /**

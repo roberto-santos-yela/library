@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Middleware\ValidateUser;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +15,16 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+    //return $request->user();
+//});
 
 Route::apiResource('/user', 'UserController');
 Route::post('/login', 'UserController@login');
-Route::apiResource('/book', 'BookController');
+
+Route::group(['middleware' => ['auth']], function () {
+    
+    Route::apiResource('/book', 'BookController');
+    Route::post('/lend', 'UserController@lend');
+
+});

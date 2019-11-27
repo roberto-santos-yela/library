@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Helpers\Token;
-use \Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -107,7 +106,7 @@ class UserController extends Controller
         if($user->password == $request->password)
         {
             
-            $token = new Token($user->email);
+            $token = new Token(["email" => $user->email]);
             $coded_token = $token->encode();
 
             return response()->json([

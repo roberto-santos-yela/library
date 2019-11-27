@@ -11,8 +11,8 @@ class Token {
 
     function __construct($data = null)
     {
-        $this->key = 'sdnfakñapfawefçwèfàdfkadfsdpfasdfasdfkàdfkasd`pfpàsdfmv';
-        $this->data;
+        $this->key = 'sdnfakapfawefwfdfkadfsdpfasdfasdfkdfkasdpfpsdfmv';
+        $this->data = $data;
         $this->algorithm = array('HS256');
 
     }

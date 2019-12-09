@@ -19,11 +19,12 @@ use App\Http\Middleware\ValidateUser;
     //return $request->user();
 //});
 
-Route::apiResource('/user', 'UserController');
+Route::post('/create_user', 'UserController@store');
 Route::post('/login', 'UserController@login');
 
 Route::group(['middleware' => ['auth']], function () {
-    
+
+    Route::apiResource('/user', 'UserController');    
     Route::apiResource('/book', 'BookController');
     Route::post('/lend', 'UserController@lend');
 

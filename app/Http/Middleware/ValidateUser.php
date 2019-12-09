@@ -24,9 +24,19 @@ class ValidateUser
         
         $user = User::where('email', '=', $decoded_token->email)->first();
                      
+        $request->request->add(['user' => $user]);
+
         if($user != null)
         {
             return $next($request);
+
+        }else{
+
+            return response()->json([
+
+                "message" => "unauthorized login attempt"
+
+            ], 401);
 
         }
      

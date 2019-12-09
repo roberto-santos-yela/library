@@ -16,7 +16,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = Book::all();
+        return response()->json($users);
     }
 
     /**
@@ -57,10 +58,10 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show($id)
     {
         //
     }
@@ -68,10 +69,10 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit($id)
     {
         //
     }
@@ -80,23 +81,41 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\User  $user
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
-        //
+        $user = User::where('id', '=', $id)->first();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->save();
+
+        return response()->json([
+
+           "message" => "user updated", 
+
+        ], 201);
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\User  $user
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        //
+        $book = User::where('id', '=', $id)->first();
+        $book->delete();
+
+        return response()->json([
+            
+            "message" => "user deleted",
+        
+        ], 201);
     }
 
     public function login(Request $request)
@@ -113,16 +132,16 @@ class UserController extends Controller
         
                 "token" => $coded_token
             
-            ], 201);
+            ], 200);
    
 
         }else{
 
             return response()->json([
 
-                "Error" => "No autorizado"
+                "message" => "unauthorized"
 
-            ], 401 );
+            ], 401);
 
         }
   
@@ -130,19 +149,14 @@ class UserController extends Controller
 
     public function lend(Request $request)
     {
+        $user = $request->user;
+        $book = Book::where('title', '=', $request->title)->first();         
+        $user->books()->attach($book->id);
 
-        $request_token = $request->header('Authorization');
-        $token = new Token();
-        $decoded_token = $token->decode($request_token);     
-       
-        $user = User::where('email', '=', $decoded_token->email)->first();
-       
-        $book = Book::where('title', '=', $request->title)->first();
-        $book_id = $book->id;        
-        
-        $user->books()->attach($book_id);
+        return response()->json([
 
+            "message" => "book $book->title was lent to user $user->name"
 
+        ], 201);
     }
-
 }

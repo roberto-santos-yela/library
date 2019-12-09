@@ -17,8 +17,8 @@ class CreateUsersLendBooksTable extends Migration
             $table->primary(['user_id','book_id']);
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('book_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('book_id')->references('id')->on('books');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
             $table->timestamps();
         });
     }
